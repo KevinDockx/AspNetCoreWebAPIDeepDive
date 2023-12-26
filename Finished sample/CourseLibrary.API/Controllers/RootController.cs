@@ -11,22 +11,18 @@ public class RootController : ControllerBase
     public IActionResult GetRoot()
     { 
         // create links for root
-        var links = new List<LinkDto>();
-
-        links.Add(
-          new(Url.Link("GetRoot", new { }),
-          "self",
-          "GET"));
-
-        links.Add(
-          new(Url.Link("GetAuthors", new { }),
-          "authors",
-          "GET"));
-
-        links.Add(
-          new(Url.Link("CreateAuthor", new { }),
-          "create_author",
-          "POST"));
+        var links = new List<LinkDto>
+        {
+            new(Url.Link("GetRoot", new { }),
+              "self",
+              "GET"),
+            new(Url.Link("GetAuthors", new { }),
+              "authors",
+              "GET"),
+            new(Url.Link("CreateAuthor", new { }),
+              "create_author",
+              "POST")
+        };
 
         return Ok(links);
     }

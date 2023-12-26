@@ -6,40 +6,27 @@ using CourseLibrary.API.ResourceParameters;
 using CourseLibrary.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.Net.Http.Headers;
-using System.Dynamic;
 using System.Text.Json;
 
 namespace CourseLibrary.API.Controllers;
 
 [ApiController] 
 [Route("api/authors")]
-public class AuthorsController : ControllerBase
+public class AuthorsController(ICourseLibraryRepository courseLibraryRepository,
+    IMapper mapper, IPropertyMappingService propertyMappingService,
+    IPropertyCheckerService propertyCheckerService,
+    ProblemDetailsFactory problemDetailsFactory) : ControllerBase
 {
-    private readonly ICourseLibraryRepository _courseLibraryRepository;
-    private readonly IMapper _mapper;
-    private readonly IPropertyMappingService _propertyMappingService;
-    private readonly IPropertyCheckerService _propertyCheckerService;
-    private readonly ProblemDetailsFactory _problemDetailsFactory;
-
-    public AuthorsController(ICourseLibraryRepository courseLibraryRepository,
-        IMapper mapper, IPropertyMappingService propertyMappingService,
-        IPropertyCheckerService propertyCheckerService,
-        ProblemDetailsFactory problemDetailsFactory)
-    {
-        _courseLibraryRepository = courseLibraryRepository ??
+    private readonly ICourseLibraryRepository _courseLibraryRepository = courseLibraryRepository ??
             throw new ArgumentNullException(nameof(courseLibraryRepository));
-        _mapper = mapper ??
+    private readonly IMapper _mapper = mapper ??
             throw new ArgumentNullException(nameof(mapper));
-        _propertyMappingService = propertyMappingService ??
+    private readonly IPropertyMappingService _propertyMappingService = propertyMappingService ??
             throw new ArgumentNullException(nameof(propertyMappingService));
-        _propertyCheckerService = propertyCheckerService ??
+    private readonly IPropertyCheckerService _propertyCheckerService = propertyCheckerService ??
             throw new ArgumentNullException(nameof(propertyCheckerService));
-        _problemDetailsFactory = problemDetailsFactory ??
+    private readonly ProblemDetailsFactory _problemDetailsFactory = problemDetailsFactory ??
             throw new ArgumentNullException(nameof(problemDetailsFactory));
-    }
-
-
 
     [HttpGet(Name = "GetAuthors")] 
     [HttpHead]
@@ -78,8 +65,7 @@ public class AuthorsController : ControllerBase
             totalPages = authorsFromRepo.TotalPages
         };
 
-        Response.Headers.Add("X-Pagination",
-               JsonSerializer.Serialize(paginationMetadata));
+        Response.Headers["X-Pagination"] = JsonSerializer.Serialize(paginationMetadata);
 
         // create links
         var links = CreateLinksForAuthors(authorsResourceParameters,
@@ -102,25 +88,25 @@ public class AuthorsController : ControllerBase
         var linkedCollectionResource = new
         {
             value = shapedAuthorsWithLinks,
-            links = links
+            links
         };
 
         // return them
         return Ok(linkedCollectionResource);
     }
 
-    private IEnumerable<LinkDto> CreateLinksForAuthors(
+    private List<LinkDto> CreateLinksForAuthors(
         AuthorsResourceParameters authorsResourceParameters,
         bool hasNext, bool hasPrevious)
     {
-        var links = new List<LinkDto>();
-
-        // self 
-        links.Add(
-            new(CreateAuthorsResourceUri(authorsResourceParameters, 
-                ResourceUriType.Current), 
-                "self", 
-                "GET"));
+        var links = new List<LinkDto>
+        {
+            // self 
+            new(CreateAuthorsResourceUri(authorsResourceParameters,
+                ResourceUriType.Current),
+                "self",
+                "GET")
+        };
 
         if (hasNext)
         {
@@ -147,21 +133,19 @@ public class AuthorsController : ControllerBase
         AuthorsResourceParameters authorsResourceParameters,
         ResourceUriType type)
     {
-        switch (type)
+        return type switch
         {
-            case ResourceUriType.PreviousPage:
-                return Url.Link("GetAuthors",
-                    new
-                    {
-                        fields = authorsResourceParameters.Fields,
-                        orderBy = authorsResourceParameters.OrderBy,
-                        pageNumber = authorsResourceParameters.PageNumber - 1,
-                        pageSize = authorsResourceParameters.PageSize,
-                        mainCategory = authorsResourceParameters.MainCategory,
-                        searchQuery = authorsResourceParameters.SearchQuery
-                    }); 
-            case ResourceUriType.NextPage:
-                return Url.Link("GetAuthors",
+            ResourceUriType.PreviousPage => Url.Link("GetAuthors",
+                                new
+                                {
+                                    fields = authorsResourceParameters.Fields,
+                                    orderBy = authorsResourceParameters.OrderBy,
+                                    pageNumber = authorsResourceParameters.PageNumber - 1,
+                                    pageSize = authorsResourceParameters.PageSize,
+                                    mainCategory = authorsResourceParameters.MainCategory,
+                                    searchQuery = authorsResourceParameters.SearchQuery
+                                }),
+            ResourceUriType.NextPage => Url.Link("GetAuthors",
                     new
                     {
                         fields = authorsResourceParameters.Fields,
@@ -170,10 +154,8 @@ public class AuthorsController : ControllerBase
                         pageSize = authorsResourceParameters.PageSize,
                         mainCategory = authorsResourceParameters.MainCategory,
                         searchQuery = authorsResourceParameters.SearchQuery
-                    });
-            case ResourceUriType.Current:
-            default:
-                return Url.Link("GetAuthors",
+                    }),
+            _ => Url.Link("GetAuthors",
                     new
                     {
                         fields = authorsResourceParameters.Fields,
@@ -182,8 +164,8 @@ public class AuthorsController : ControllerBase
                         pageSize = authorsResourceParameters.PageSize,
                         mainCategory = authorsResourceParameters.MainCategory,
                         searchQuery = authorsResourceParameters.SearchQuery
-                    });
-        } 
+                    }),
+        };
     }
 
     [RequestHeaderMatchesMediaType("Accept", 
@@ -406,7 +388,7 @@ public class AuthorsController : ControllerBase
     //    return Ok(friendlyResourceToReturn);
     //}
 
-    private IEnumerable<LinkDto> CreateLinksForAuthor(Guid authorId, 
+    private List<LinkDto> CreateLinksForAuthor(Guid authorId, 
         string? fields)
     {
         var links = new List<LinkDto>();
@@ -497,7 +479,7 @@ public class AuthorsController : ControllerBase
     [HttpOptions()]
     public IActionResult GetAuthorsOptions()
     {
-        Response.Headers.Add("Allow", "GET,HEAD,POST,OPTIONS");
+        Response.Headers.Allow = "GET,HEAD,POST,OPTIONS";
         return Ok();
     }
 }

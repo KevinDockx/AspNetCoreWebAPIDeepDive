@@ -2,7 +2,7 @@
 
 public class AuthorsResourceParameters
 {
-    const int maxPageSize = 20;
+    const int _maxPageSize = 20;
     public string? MainCategory { get; set; }
     public string? SearchQuery { get; set; }
     public int PageNumber { get; set; } = 1;
@@ -11,7 +11,7 @@ public class AuthorsResourceParameters
     public int PageSize
     {
         get => _pageSize;
-        set => _pageSize = (value > maxPageSize) ? maxPageSize : value;
+        set => _pageSize = (value > _maxPageSize) ? _maxPageSize : value;
     }
     public string OrderBy { get; set; } = "Name";
     public string? Fields { get; set; }

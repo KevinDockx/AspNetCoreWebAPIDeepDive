@@ -11,4 +11,4 @@ var app = builder
 await app.ResetDatabaseAsync();
 
 // run the app
-app.Run();
+app.Run(); 

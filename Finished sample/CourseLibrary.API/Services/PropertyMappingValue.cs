@@ -1,15 +1,9 @@
 ﻿namespace CourseLibrary.API.Services;
 
-public class PropertyMappingValue
+public class PropertyMappingValue(IEnumerable<string> destinationProperties,
+        bool revert = false)
 {
-    public IEnumerable<string> DestinationProperties { get; private set; }
-    public bool Revert { get; private set; }
-
-    public PropertyMappingValue(IEnumerable<string> destinationProperties,
-            bool revert = false)
-    {
-        DestinationProperties = destinationProperties
+    public IEnumerable<string> DestinationProperties { get; private set; } = destinationProperties
             ?? throw new ArgumentNullException(nameof(destinationProperties));
-        Revert = revert;
-    }
+    public bool Revert { get; private set; } = revert;
 }

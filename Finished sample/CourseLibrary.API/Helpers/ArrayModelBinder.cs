@@ -49,4 +49,3 @@ public class ArrayModelBinder : IModelBinder
         return Task.CompletedTask;
     }
 }
-

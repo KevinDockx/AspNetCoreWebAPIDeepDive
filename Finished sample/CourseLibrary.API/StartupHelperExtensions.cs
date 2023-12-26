@@ -64,13 +64,10 @@ internal static class StartupHelperExtensions
         builder.Services.Configure<MvcOptions>(config =>
         {
             var newtonsoftJsonOutputFormatter = config.OutputFormatters
-                  .OfType<NewtonsoftJsonOutputFormatter>()?.FirstOrDefault();
-
-            if (newtonsoftJsonOutputFormatter != null)
-            {
-                newtonsoftJsonOutputFormatter.SupportedMediaTypes
-                    .Add("application/vnd.marvin.hateoas+json");
-            }
+                .OfType<NewtonsoftJsonOutputFormatter>()?.FirstOrDefault();
+             
+            newtonsoftJsonOutputFormatter?.SupportedMediaTypes
+                .Add("application/vnd.marvin.hateoas+json"); 
         });
 
         builder.Services.AddTransient<IPropertyMappingService, 

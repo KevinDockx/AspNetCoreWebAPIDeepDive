@@ -51,13 +51,8 @@ public static class ObjectExtensions
             var propertyInfo = typeof(TSource)
                 .GetProperty(propertyName,
                 BindingFlags.IgnoreCase | BindingFlags.Public | 
-                BindingFlags.Instance);
-
-            if (propertyInfo == null)
-            {
-                throw new Exception($"Property {propertyName} wasn't found " +
+                BindingFlags.Instance) ?? throw new Exception($"Property {propertyName} wasn't found " +
                     $"on {typeof(TSource)}");
-            }
 
             // get the value of the property on the source object
             var propertyValue = propertyInfo.GetValue(source);

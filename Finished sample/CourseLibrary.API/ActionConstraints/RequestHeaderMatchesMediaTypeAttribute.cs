@@ -8,7 +8,7 @@ namespace CourseLibrary.API.ActionConstraints;
 public class RequestHeaderMatchesMediaTypeAttribute : Attribute, IActionConstraint
 {
     private readonly string _requestHeaderToMatch;
-    private readonly MediaTypeCollection _mediaTypes = new();
+    private readonly MediaTypeCollection _mediaTypes = [];
 
     public RequestHeaderMatchesMediaTypeAttribute(string requestHeaderToMatch,
           string mediaType, params string[] otherMediaTypes)
@@ -26,7 +26,7 @@ public class RequestHeaderMatchesMediaTypeAttribute : Attribute, IActionConstrai
         }
         else
         {
-            throw new ArgumentException(nameof(mediaType));
+            throw new Exception($"Parsing of {nameof(mediaType)} failed.");
         }
 
         foreach (var otherMediaType in otherMediaTypes)
@@ -38,7 +38,7 @@ public class RequestHeaderMatchesMediaTypeAttribute : Attribute, IActionConstrai
             }
             else
             {
-                throw new ArgumentException(nameof(otherMediaTypes));
+                throw new Exception($"Parsing of {nameof(otherMediaType)} failed.");
             }
         }
 
@@ -49,12 +49,13 @@ public class RequestHeaderMatchesMediaTypeAttribute : Attribute, IActionConstrai
     public bool Accept(ActionConstraintContext context)
     {
         var requestHeaders = context.RouteContext.HttpContext.Request.Headers;
-        if (!requestHeaders.ContainsKey(_requestHeaderToMatch))
+        if (!requestHeaders.TryGetValue(_requestHeaderToMatch, 
+            out Microsoft.Extensions.Primitives.StringValues value))
         {
             return false;
-        }
+        } 
 
-        var parsedRequestMediaType = new MediaType(requestHeaders[_requestHeaderToMatch]);
+        var parsedRequestMediaType = new MediaType(value);
 
         // if one of the media types matches, return true
         foreach (var mediaType in _mediaTypes)

@@ -9,10 +9,7 @@ public static class IEnumerableExtensions
             this IEnumerable<TSource> source,
             string? fields)
     {
-        if (source == null)
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
+        ArgumentNullException.ThrowIfNull(source);
 
         // create a list to hold our ExpandoObjects
         var expandoObjectList = new List<ExpandoObject>();
@@ -48,13 +45,8 @@ public static class IEnumerableExtensions
                 // flag overwrites the already-existing binding flags.
                 var propertyInfo = typeof(TSource)
                     .GetProperty(propertyName, BindingFlags.IgnoreCase |
-                    BindingFlags.Public | BindingFlags.Instance);
-
-                if (propertyInfo == null)
-                {
-                    throw new Exception($"Property {propertyName} wasn't found on" +
-                        $" {typeof(TSource)}");
-                }
+                    BindingFlags.Public | BindingFlags.Instance) 
+                    ?? throw new Exception($"Property {propertyName} wasn't found on {typeof(TSource)}");
 
                 // add propertyInfo to list 
                 propertyInfoList.Add(propertyInfo);

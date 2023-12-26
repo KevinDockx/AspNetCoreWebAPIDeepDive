@@ -14,8 +14,7 @@ public class PropertyMappingService : IPropertyMappingService
             { "Name", new(new[] { "FirstName", "LastName" }) }
         };
 
-    private readonly IList<IPropertyMapping> _propertyMappings =
-        new List<IPropertyMapping>();
+    private readonly List<IPropertyMapping> _propertyMappings = [];
 
     public PropertyMappingService()
     {
@@ -60,7 +59,7 @@ public class PropertyMappingService : IPropertyMappingService
             // remove everything after the first " " - if the fields 
             // are coming from an orderBy string, this part must be 
             // ignored
-            var indexOfFirstSpace = trimmedField.IndexOf(" ");
+            var indexOfFirstSpace = trimmedField.IndexOf(' ');
             var propertyName = indexOfFirstSpace == -1 ?
                 trimmedField : trimmedField.Remove(indexOfFirstSpace);
 

@@ -4,12 +4,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CourseLibrary.API.DbContexts;
 
-public class CourseLibraryContext : DbContext
+public class CourseLibraryContext(DbContextOptions<CourseLibraryContext> options) : DbContext(options)
 {
-    public CourseLibraryContext(DbContextOptions<CourseLibraryContext> options)
-       : base(options)
-    {
-    }
 
     // base DbContext constructor ensures that Books and Authors are not null after
     // having been constructed.  Compiler warning ("uninitialized non-nullable property")

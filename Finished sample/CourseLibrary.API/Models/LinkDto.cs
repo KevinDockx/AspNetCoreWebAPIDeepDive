@@ -1,15 +1,8 @@
 ﻿namespace CourseLibrary.API.Models;
 
-public class LinkDto
+public class LinkDto(string? href, string? rel, string method)
 {
-    public string? Href { get; private set; }
-    public string? Rel { get; private set; }
-    public string Method { get; private set; }
-
-    public LinkDto(string? href, string? rel, string method)
-    {
-        Href = href;
-        Rel = rel;
-        Method = method;
-    }
+    public string? Href { get; private set; } = href;
+    public string? Rel { get; private set; } = rel;
+    public string Method { get; private set; } = method;
 }

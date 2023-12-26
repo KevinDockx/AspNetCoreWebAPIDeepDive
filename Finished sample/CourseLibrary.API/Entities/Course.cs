@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourseLibrary.API.Entities;
 
-public class Course
+public class Course(string title)
 {
     [Key]
     public Guid Id { get; set; }
-     
+
     [Required]
     [MaxLength(100)]
-    public string Title { get; set; }
+    public string Title { get; set; } = title;
 
     [MaxLength(1500)]
     public string? Description { get; set; }
@@ -19,10 +19,5 @@ public class Course
     public Author Author { get; set; } = null!;
 
     public Guid AuthorId { get; set; }
-
-    public Course(string title)
-    {
-        Title = title; 
-    }
 }
 

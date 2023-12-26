@@ -9,20 +9,14 @@ namespace CourseLibrary.API.Controllers;
 
 [ApiController]
 [Route("api/authorcollections")]
-public class AuthorCollectionsController : ControllerBase
+public class AuthorCollectionsController(
+    ICourseLibraryRepository courseLibraryRepository,
+    IMapper mapper) : ControllerBase
 {
-    private readonly ICourseLibraryRepository _courseLibraryRepository;
-    private readonly IMapper _mapper;
-
-    public AuthorCollectionsController(
-        ICourseLibraryRepository courseLibraryRepository,
-        IMapper mapper)
-    {
-        _courseLibraryRepository = courseLibraryRepository ??
+    private readonly ICourseLibraryRepository _courseLibraryRepository = courseLibraryRepository ??
             throw new ArgumentNullException(nameof(courseLibraryRepository));
-        _mapper = mapper ??
+    private readonly IMapper _mapper = mapper ??
             throw new ArgumentNullException(nameof(mapper));
-    }
 
     // 1,2,3
     // key1=value1,key2=value2

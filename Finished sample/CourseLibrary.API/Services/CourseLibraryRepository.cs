@@ -7,18 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CourseLibrary.API.Services;
 
-public class CourseLibraryRepository : ICourseLibraryRepository 
+public class CourseLibraryRepository(CourseLibraryContext context,
+    IPropertyMappingService propertyMappingService) : ICourseLibraryRepository 
 {
-    private readonly CourseLibraryContext _context;
-    private readonly IPropertyMappingService _propertyMappingService;
-
-    public CourseLibraryRepository(CourseLibraryContext context, 
-        IPropertyMappingService propertyMappingService)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-        _propertyMappingService = propertyMappingService ?? 
+    private readonly CourseLibraryContext _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly IPropertyMappingService _propertyMappingService = propertyMappingService ??
             throw new ArgumentNullException(nameof(propertyMappingService));
-    }
 
     public void AddCourse(Guid authorId, Course course)
     {
@@ -27,10 +21,7 @@ public class CourseLibraryRepository : ICourseLibraryRepository
             throw new ArgumentNullException(nameof(authorId));
         }
 
-        if (course == null)
-        {
-            throw new ArgumentNullException(nameof(course));
-        }
+        ArgumentNullException.ThrowIfNull(course);
 
         // always set the AuthorId to the passed-in authorId
         course.AuthorId = authorId;
@@ -79,10 +70,7 @@ public class CourseLibraryRepository : ICourseLibraryRepository
 
     public void AddAuthor(Author author)
     {
-        if (author == null)
-        {
-            throw new ArgumentNullException(nameof(author));
-        }
+        ArgumentNullException.ThrowIfNull(author);
 
         // the repository fills the id (instead of using identity columns)
         author.Id = Guid.NewGuid();
@@ -107,11 +95,7 @@ public class CourseLibraryRepository : ICourseLibraryRepository
 
     public void DeleteAuthor(Author author)
     {
-        if (author == null)
-        {
-            throw new ArgumentNullException(nameof(author));
-        }
-
+        ArgumentNullException.ThrowIfNull(author);
         _context.Authors.Remove(author);
     }
 
@@ -136,10 +120,7 @@ public class CourseLibraryRepository : ICourseLibraryRepository
     public async Task<PagedList<Author>> GetAuthorsAsync(
         AuthorsResourceParameters authorsResourceParameters)
     {
-        if (authorsResourceParameters == null)
-        {
-            throw new ArgumentNullException(nameof(authorsResourceParameters));
-        }
+        ArgumentNullException.ThrowIfNull(authorsResourceParameters);
 
         //if (string.IsNullOrWhiteSpace(authorsResourceParameters.MainCategory)
         //    && string.IsNullOrWhiteSpace(authorsResourceParameters.SearchQuery))
@@ -181,10 +162,7 @@ public class CourseLibraryRepository : ICourseLibraryRepository
 
     public async Task<IEnumerable<Author>> GetAuthorsAsync(IEnumerable<Guid> authorIds)
     {
-        if (authorIds == null)
-        {
-            throw new ArgumentNullException(nameof(authorIds));
-        }
+        ArgumentNullException.ThrowIfNull(authorIds);
 
         return await _context.Authors.Where(a => authorIds.Contains(a.Id))
             .OrderBy(a => a.FirstName)

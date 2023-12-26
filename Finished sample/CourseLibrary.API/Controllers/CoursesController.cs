@@ -15,19 +15,13 @@ namespace CourseLibrary.API.Controllers;
 //[ResponseCache(CacheProfileName = "240SecondsCacheProfile")]
 [HttpCacheExpiration(CacheLocation = CacheLocation.Public)]
 [HttpCacheValidation(MustRevalidate = true)]
-public class CoursesController : ControllerBase
+public class CoursesController(ICourseLibraryRepository courseLibraryRepository,
+    IMapper mapper) : ControllerBase
 {
-    private readonly ICourseLibraryRepository _courseLibraryRepository;
-    private readonly IMapper _mapper;
-
-    public CoursesController(ICourseLibraryRepository courseLibraryRepository,
-        IMapper mapper)
-    {
-        _courseLibraryRepository = courseLibraryRepository ??
+    private readonly ICourseLibraryRepository _courseLibraryRepository = courseLibraryRepository ??
             throw new ArgumentNullException(nameof(courseLibraryRepository));
-        _mapper = mapper ??
+    private readonly IMapper _mapper = mapper ??
             throw new ArgumentNullException(nameof(mapper));
-    }
 
     [HttpGet(Name = "GetCoursesForAuthor")]
     public async Task<ActionResult<IEnumerable<CourseDto>>> GetCoursesForAuthor(

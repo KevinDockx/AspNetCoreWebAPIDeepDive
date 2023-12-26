@@ -10,15 +10,9 @@ public static class IQueryableExtensions
         string orderBy,
         Dictionary<string, PropertyMappingValue> mappingDictionary)
     {
-        if (source == null)
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
+        ArgumentNullException.ThrowIfNull(source);
 
-        if (mappingDictionary == null)
-        {
-            throw new ArgumentNullException(nameof(mappingDictionary));
-        }
+        ArgumentNullException.ThrowIfNull(mappingDictionary);
 
         if (string.IsNullOrWhiteSpace(orderBy))
         {
@@ -44,23 +38,20 @@ public static class IQueryableExtensions
 
             // remove " asc" or " desc" from the orderBy clause, so we 
             // get the property name to look for in the mapping dictionary
-            var indexOfFirstSpace = trimmedOrderByClause.IndexOf(" ");
+            var indexOfFirstSpace = trimmedOrderByClause.IndexOf(' ');
             var propertyName = indexOfFirstSpace == -1 ?
                 trimmedOrderByClause : trimmedOrderByClause
                 .Remove(indexOfFirstSpace);
 
-            // find the matching property
-            if (!mappingDictionary.ContainsKey(propertyName))
+            // find the matching property & get is as the PropertyMappingValue
+            if (!mappingDictionary.TryGetValue(propertyName, out PropertyMappingValue? propertyMappingValue))
             {
                 throw new ArgumentException($"Key mapping for {propertyName} is missing");
-            }
-
-            // get the PropertyMappingValue
-            var propertyMappingValue = mappingDictionary[propertyName];
-
+            }  
+             
             if (propertyMappingValue == null)
             {
-                throw new ArgumentNullException(nameof(propertyMappingValue));
+                throw new Exception($"Value for keymapping {propertyName} must not be null");
             }
 
             // revert sort order if necessary
