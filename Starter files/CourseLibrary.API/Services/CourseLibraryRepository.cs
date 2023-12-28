@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CourseLibrary.API.Services;
 
-public class CourseLibraryRepository : ICourseLibraryRepository 
+public class CourseLibraryRepository(CourseLibraryContext context) : ICourseLibraryRepository 
 {
-    private readonly CourseLibraryContext _context;
-
-    public CourseLibraryRepository(CourseLibraryContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    private readonly CourseLibraryContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public void AddCourse(Guid authorId, Course course)
     {
@@ -20,10 +15,7 @@ public class CourseLibraryRepository : ICourseLibraryRepository
             throw new ArgumentNullException(nameof(authorId));
         }
 
-        if (course == null)
-        {
-            throw new ArgumentNullException(nameof(course));
-        }
+        ArgumentNullException.ThrowIfNull(course);
 
         // always set the AuthorId to the passed-in authorId
         course.AuthorId = authorId;
@@ -72,10 +64,7 @@ public class CourseLibraryRepository : ICourseLibraryRepository
 
     public void AddAuthor(Author author)
     {
-        if (author == null)
-        {
-            throw new ArgumentNullException(nameof(author));
-        }
+        ArgumentNullException.ThrowIfNull(author);
 
         // the repository fills the id (instead of using identity columns)
         author.Id = Guid.NewGuid();
@@ -100,10 +89,7 @@ public class CourseLibraryRepository : ICourseLibraryRepository
 
     public void DeleteAuthor(Author author)
     {
-        if (author == null)
-        {
-            throw new ArgumentNullException(nameof(author));
-        }
+        ArgumentNullException.ThrowIfNull(author);
 
         _context.Authors.Remove(author);
     }
@@ -128,10 +114,7 @@ public class CourseLibraryRepository : ICourseLibraryRepository
 
     public async Task<IEnumerable<Author>> GetAuthorsAsync(IEnumerable<Guid> authorIds)
     {
-        if (authorIds == null)
-        {
-            throw new ArgumentNullException(nameof(authorIds));
-        }
+        ArgumentNullException.ThrowIfNull(authorIds);
 
         return await _context.Authors.Where(a => authorIds.Contains(a.Id))
             .OrderBy(a => a.FirstName)

@@ -8,19 +8,13 @@ namespace CourseLibrary.API.Controllers;
 
 [ApiController]
 [Route("api/author/{authorId}/courses")]
-public class CoursesController : ControllerBase
+public class CoursesController(ICourseLibraryRepository courseLibraryRepository,
+    IMapper mapper) : ControllerBase
 {
-    private readonly ICourseLibraryRepository _courseLibraryRepository;
-    private readonly IMapper _mapper;
-
-    public CoursesController(ICourseLibraryRepository courseLibraryRepository,
-        IMapper mapper)
-    {
-        _courseLibraryRepository = courseLibraryRepository ??
+    private readonly ICourseLibraryRepository _courseLibraryRepository = courseLibraryRepository ??
             throw new ArgumentNullException(nameof(courseLibraryRepository));
-        _mapper = mapper ??
+    private readonly IMapper _mapper = mapper ??
             throw new ArgumentNullException(nameof(mapper));
-    }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CourseDto>>> GetCoursesForAuthor(Guid authorId)

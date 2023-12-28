@@ -18,4 +18,3 @@ public interface ICourseLibraryRepository
     Task<bool> AuthorExistsAsync(Guid authorId);
     Task<bool> SaveAsync();
 }
-

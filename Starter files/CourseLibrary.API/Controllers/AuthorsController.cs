@@ -7,20 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace CourseLibrary.API.Controllers;
 
 [ApiController] 
-public class AuthorsController : ControllerBase
+public class AuthorsController(
+    ICourseLibraryRepository courseLibraryRepository,
+    IMapper mapper) : ControllerBase
 {
-    private readonly ICourseLibraryRepository _courseLibraryRepository;
-    private readonly IMapper _mapper;
-
-    public AuthorsController(
-        ICourseLibraryRepository courseLibraryRepository,
-        IMapper mapper)
-    {
-        _courseLibraryRepository = courseLibraryRepository ??
+    private readonly ICourseLibraryRepository _courseLibraryRepository = courseLibraryRepository ??
             throw new ArgumentNullException(nameof(courseLibraryRepository));
-        _mapper = mapper ??
+    private readonly IMapper _mapper = mapper ??
             throw new ArgumentNullException(nameof(mapper));
-    }
 
     [HttpPost("api/author")] 
     public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors()
