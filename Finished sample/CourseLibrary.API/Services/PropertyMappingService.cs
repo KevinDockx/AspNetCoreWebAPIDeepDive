@@ -8,10 +8,10 @@ public class PropertyMappingService : IPropertyMappingService
     private readonly Dictionary<string, PropertyMappingValue> _authorPropertyMapping =
         new(StringComparer.OrdinalIgnoreCase)
         {
-            { "Id", new(new[] { "Id" }) },
-            { "MainCategory", new(new[] { "MainCategory" }) },
-            { "Age", new(new[] { "DateOfBirth" }, true) },
-            { "Name", new(new[] { "FirstName", "LastName" }) }
+            { "Id", new(["Id"]) },
+            { "MainCategory", new(["MainCategory"]) },
+            { "Age", new(["DateOfBirth"], true) },
+            { "Name", new(["FirstName", "LastName"]) }
         };
 
     private readonly List<IPropertyMapping> _propertyMappings = [];

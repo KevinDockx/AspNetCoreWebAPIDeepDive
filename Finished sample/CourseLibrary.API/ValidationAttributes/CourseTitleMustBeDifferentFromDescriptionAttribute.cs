@@ -26,7 +26,7 @@ public class CourseTitleMustBeDifferentFromDescriptionAttribute
         {
             return new ValidationResult(
             "The provided description should be different from the title.",
-                new[] { nameof(CourseForManipulationDto) });
+                [nameof(CourseForManipulationDto)]);
         }
 
         return ValidationResult.Success;

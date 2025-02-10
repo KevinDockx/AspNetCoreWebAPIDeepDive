@@ -23,6 +23,6 @@ public class Author(string firstName, string lastName, string mainCategory)
     public string MainCategory { get; set; } = mainCategory;
 
     public ICollection<Course> Courses { get; set; }
-        = new List<Course>();
+        = [];
 }
 

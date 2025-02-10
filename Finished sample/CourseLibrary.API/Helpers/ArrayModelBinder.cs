@@ -34,7 +34,7 @@ public class ArrayModelBinder : IModelBinder
         var converter = TypeDescriptor.GetConverter(elementType);
 
         // Convert each item in the value list to the enumerable type
-        var values = value.Split(new[] { "," }, 
+        var values = value.Split([","], 
             StringSplitOptions.RemoveEmptyEntries)
             .Select(x => converter.ConvertFromString(x.Trim()))
             .ToArray();
