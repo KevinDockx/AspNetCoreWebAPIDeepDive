@@ -19,7 +19,8 @@ internal static class StartupHelperExtensions
             options.UseSqlite(@"Data Source=library.db");
         });
 
-        builder.Services.AddAutoMapper(
+        // register AutoMapper-related services
+        builder.Services.AddAutoMapper(config => { },
             AppDomain.CurrentDomain.GetAssemblies());
 
         return builder.Build();

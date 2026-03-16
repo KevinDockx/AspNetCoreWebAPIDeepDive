@@ -78,9 +78,11 @@ public class AuthorsController(ICourseLibraryRepository courseLibraryRepository,
         var shapedAuthorsWithLinks = shapedAuthors.Select(author =>
         {
             var authorAsDictionary = author as IDictionary<string, object?>;
-            var authorLinks = CreateLinksForAuthor(
-                (Guid)authorAsDictionary["Id"], 
-                null);
+            if (authorAsDictionary["Id"] is not Guid authorId)
+            {
+                throw new InvalidOperationException("Author Id is required for link generation.");
+            }
+            var authorLinks = CreateLinksForAuthor(authorId, null);
             authorAsDictionary.Add("links", authorLinks);
             return authorAsDictionary;
         });
